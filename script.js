@@ -7,6 +7,13 @@ searchBtn.addEventListener("click", () => {
     getWeather(city);
 });
 
+document.getElementById("cityInput")
+    .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            searchBtn.click();
+        }
+});
+
 async function getWeather(city) {
     try {
         const response = await fetch(
