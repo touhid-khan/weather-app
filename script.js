@@ -26,15 +26,17 @@ async function getWeather(city) {
 }
 
 function updateCurrentWeather(data) {
-    document.getElementById("cityName").textContent = data.name;
-    document.getElementById("temperature").textContent =
-        Math.round(data.main.temp) + "°";
+    document.getElementById("realFeel").textContent =
+    Math.round(data.main.feels_like) + "°";
 
-    document.getElementById("chanceRain").textContent =
-        "Humidity: " + data.main.humidity + "%";
+document.getElementById("windSpeed").textContent =
+    data.wind.speed + " m/s";
 
-    document.querySelector(".weather-icon").textContent =
-        getWeatherIcon(data.weather[0].main);
+document.getElementById("humidity").textContent =
+    data.main.humidity + "%";
+
+document.getElementById("pressure").textContent =
+    data.main.pressure + " hPa";
 }
 
 function getWeatherIcon(condition) {
