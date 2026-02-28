@@ -1,39 +1,55 @@
 const apiKey = "4a0438440857eb544edd63f2efd13057";
 
-const searchBtn = document.getElementById("searchBtn");
+const searchInput = document.getElementById("searchInput");
 
-searchBtn.addEventListener("click", () => {
-    const city = document.getElementById("cityInput").value;
-    getWeather(city);
-});
-
-document.getElementById("cityInput")
-    .addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-            searchBtn.click();
-        }
+searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        getWeather(searchInput.value);
+    }
 });
 
 async function getWeather(city) {
     try {
         const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
         );
 
-        if (!response.ok) {
-            throw new Error("City not found");
-        }
+        if (!response.ok) throw new Error("City not found");
 
         const data = await response.json();
 
-        document.getElementById("cityName").textContent = data.name;
-        document.getElementById("temperature").textContent =
-            `Temperature: ${data.main.temp} °C`;
-        document.getElementById("description").textContent =
-            `Condition: ${data.weather[0].description}`;
+        updateCurrentWeather(data);
 
     } catch (error) {
-        document.getElementById("weatherResult").innerHTML =
-            `<p>${error.message}</p>`;
+        alert(error.message);
+    }
+}
+
+function updateCurrentWeather(data) {
+    document.getElementById("cityName").textContent = data.name;
+    document.getElementById("temperature").textContent =
+        Math.round(data.main.temp) + "°";
+
+    document.getElementById("chanceRain").textContent =
+        "Humidity: " + data.main.humidity + "%";
+
+    document.querySelector(".weather-icon").textContent =
+        getWeatherIcon(data.weather[0].main);
+}
+
+function getWeatherIcon(condition) {
+    switch (condition) {
+        case "Clear":
+            return "☀";
+        case "Clouds":
+            return "☁";
+        case "Rain":
+            return "🌧";
+        case "Thunderstorm":
+            return "⛈";
+        case "Snow":
+            return "❄";
+        default:
+            return "🌤";
     }
 }
