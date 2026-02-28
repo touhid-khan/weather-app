@@ -26,17 +26,43 @@ async function getWeather(city) {
 }
 
 function updateCurrentWeather(data) {
+
+    // City name
+    const cityElement = document.getElementById("cityName");
+    if (cityElement) {
+        cityElement.textContent = data.name;
+    }
+
+    // Temperature
+    const tempElement = document.getElementById("temperature");
+    if (tempElement) {
+        tempElement.textContent = Math.round(data.main.temp) + "°";
+    }
+
+    // Humidity (replace chanceRain text)
+    const rainElement = document.getElementById("chanceRain");
+    if (rainElement) {
+        rainElement.textContent = "Humidity: " + data.main.humidity + "%";
+    }
+
+    // Weather icon
+    const iconElement = document.querySelector(".weather-icon");
+    if (iconElement) {
+        iconElement.textContent = getWeatherIcon(data.weather[0].main);
+    }
+
+    // Air conditions
     document.getElementById("realFeel").textContent =
-    Math.round(data.main.feels_like) + "°";
+        Math.round(data.main.feels_like) + "°";
 
-document.getElementById("windSpeed").textContent =
-    data.wind.speed + " m/s";
+    document.getElementById("windSpeed").textContent =
+        data.wind.speed + " m/s";
 
-document.getElementById("humidity").textContent =
-    data.main.humidity + "%";
+    document.getElementById("humidity").textContent =
+        data.main.humidity + "%";
 
-document.getElementById("pressure").textContent =
-    data.main.pressure + " hPa";
+    document.getElementById("pressure").textContent =
+        data.main.pressure + " hPa";
 }
 
 function getWeatherIcon(condition) {
