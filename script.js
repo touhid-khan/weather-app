@@ -19,6 +19,16 @@ async function getWeather(city) {
         const data = await response.json();
 
         updateCurrentWeather(data);
+        // Fetch forecast data
+        const forecastResponse = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`
+        );
+
+        if (!forecastResponse.ok) throw new Error("Forecast not found");
+
+        const forecastData = await forecastResponse.json();
+
+        updateTodayForecast(forecastData);
 
     } catch (error) {
         alert(error.message);
@@ -63,6 +73,49 @@ function updateCurrentWeather(data) {
 
     document.getElementById("pressure").textContent =
         data.main.pressure + " hPa";
+}
+
+function updateTodayForecast(data) {
+
+    const forecastContainer = document.getElementById("todayForecast");
+
+    if (!forecastContainer) return;
+
+    forecastContainer.innerHTML = ""; // Clear old forecast
+
+    const today = new Date().getDate();
+
+    // Filter only today's data
+    const todayData = data.list.filter(item => {
+        const itemDate = new Date(item.dt_txt);
+        return itemDate.getDate() === today;
+    });
+
+    // Take next 4 time slots (every 3 hours)
+    const nextHours = todayData.slice(0, 4);
+
+    nextHours.forEach(item => {
+
+        const dateObj = new Date(item.dt_txt);
+        let hours = dateObj.getHours();
+        let ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+
+const time = hours + " " + ampm;
+        const temp = Math.round(item.main.temp);
+        const icon = getWeatherIcon(item.weather[0].main);
+
+        const forecastItem = `
+            <div class="forecast-item">
+                <p>${time}</p>
+                <p>${icon}</p>
+                <p>${temp}°</p>
+            </div>
+        `;
+
+        forecastContainer.innerHTML += forecastItem;
+    });
 }
 
 function getWeatherIcon(condition) {
