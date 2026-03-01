@@ -83,3 +83,28 @@ input {
     padding: 20px;
     border-radius: 20px;
 }
+
+body.dark {
+    background: #121212 !important;
+    color: white;
+}
+
+body.dark .sidebar {
+    background: #1e1e1e;
+}
+
+body.dark .current-weather,
+body.dark .hourly,
+body.dark .air-conditions,
+body.dark .forecast {
+    background: #1e1e1e;
+    color: white;
+}
+
+#themeToggle {
+    padding: 8px 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+}
