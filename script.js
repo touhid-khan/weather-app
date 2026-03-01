@@ -96,6 +96,9 @@ function updateCurrentWeather(data) {
         data.main.pressure + " hPa";
 
     changeBackground(data.weather[0].main);
+
+    document.querySelector(".current-weather").classList.add("fade-in");
+    document.querySelector(".air-conditions").classList.add("slide-up");
 }
 
 function updateTodayForecast(data) {
@@ -130,6 +133,8 @@ function updateTodayForecast(data) {
 
         forecastContainer.appendChild(forecastItem);
     });
+
+    document.querySelector(".hourly").classList.add("fade-in");
 }
 
 function getWeatherIcon(condition) {
