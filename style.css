@@ -108,3 +108,23 @@ body.dark .forecast {
     border-radius: 6px;
     border: none;
 }
+
+@media (max-width: 900px) {
+
+    .app {
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .forecast {
+        width: 100%;
+    }
+
+    .hourly-row {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
