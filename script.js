@@ -94,6 +94,8 @@ function updateCurrentWeather(data) {
 
     document.getElementById("pressure").textContent =
         data.main.pressure + " hPa";
+
+    changeBackground(data.weather[0].main);
 }
 
 function updateTodayForecast(data) {
@@ -172,3 +174,29 @@ function getLocationWeather() {
 }
 
 window.onload = getLocationWeather;
+
+function changeBackground(condition) {
+
+    const body = document.body;
+
+    switch (condition) {
+        case "Clear":
+            body.style.background = "linear-gradient(to right, #fceabb, #f8b500)";
+            break;
+
+        case "Clouds":
+            body.style.background = "linear-gradient(to right, #bdc3c7, #2c3e50)";
+            break;
+
+        case "Rain":
+            body.style.background = "linear-gradient(to right, #4b79a1, #283e51)";
+            break;
+
+        case "Snow":
+            body.style.background = "linear-gradient(to right, #e6dada, #274046)";
+            break;
+
+        default:
+            body.style.background = "linear-gradient(to right, #2193b0, #6dd5ed)";
+    }
+}
