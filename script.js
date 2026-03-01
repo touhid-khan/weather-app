@@ -146,3 +146,29 @@ function getWeatherIcon(condition) {
             return "🌤";
     }
 }
+
+function getLocationWeather() {
+
+    if (!navigator.geolocation) {
+        alert("Geolocation not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async position => {
+
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`
+        );
+
+        const data = await response.json();
+
+        updateCurrentWeather(data);
+        getForecast(data.name);
+
+    });
+}
+
+window.onload = getLocationWeather;
