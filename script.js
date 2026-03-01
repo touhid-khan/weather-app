@@ -5,10 +5,19 @@ const searchInput = document.getElementById("searchInput");
 searchInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         getWeather(searchInput.value);
+        searchInput.value = "";
     }
 });
 
 async function getWeather(city) {
+
+    const loading = document.getElementById("loadingMessage");
+    const error = document.getElementById("errorMessage");
+
+    // Show loading
+    loading.style.display = "block";
+    error.style.display = "none";
+
     try {
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
@@ -19,19 +28,31 @@ async function getWeather(city) {
         const data = await response.json();
 
         updateCurrentWeather(data);
-        // Fetch forecast data
-        const forecastResponse = await fetch(
+        getForecast(city);
+
+    } catch (err) {
+        error.textContent = err.message;
+        error.style.display = "block";
+    }
+
+    // Hide loading
+    loading.style.display = "none";
+}
+
+async function getForecast(city) {
+    try {
+        const response = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`
         );
 
-        if (!forecastResponse.ok) throw new Error("Forecast not found");
+        if (!response.ok) throw new Error("Forecast not available");
 
-        const forecastData = await forecastResponse.json();
+        const data = await response.json();
 
-        updateTodayForecast(forecastData);
+        updateTodayForecast(data);
 
     } catch (error) {
-        alert(error.message);
+        console.log("Forecast error:", error.message);
     }
 }
 
@@ -78,23 +99,20 @@ function updateCurrentWeather(data) {
 function updateTodayForecast(data) {
 
     const forecastContainer = document.getElementById("todayForecast");
-
     if (!forecastContainer) return;
 
-    forecastContainer.innerHTML = ""; // Clear old forecast
+    forecastContainer.innerHTML = "";
 
     const today = new Date().getDate();
 
-    // Filter only today's data
     const todayData = data.list.filter(item => {
-        const itemDate = new Date(item.dt_txt);
-        return itemDate.getDate() === today;
+        const date = new Date(item.dt_txt);
+        return date.getDate() === today;
     });
 
-    // Take next 4 time slots (every 3 hours)
-    const nextHours = todayData.slice(0, 4);
+    const limitedData = todayData.slice(0, 6);
 
-    nextHours.forEach(item => {
+    limitedData.forEach(item => {
 
         const dateObj = new Date(item.dt_txt);
         let hours = dateObj.getHours();
@@ -102,19 +120,13 @@ function updateTodayForecast(data) {
         hours = hours % 12;
         hours = hours ? hours : 12;
 
-const time = hours + " " + ampm;
-        const temp = Math.round(item.main.temp);
-        const icon = getWeatherIcon(item.weather[0].main);
+        const time = hours + " " + ampm;
+        const temp = Math.round(item.main.temp) + "°";
 
-        const forecastItem = `
-            <div class="forecast-item">
-                <p>${time}</p>
-                <p>${icon}</p>
-                <p>${temp}°</p>
-            </div>
-        `;
+        const forecastItem = document.createElement("div");
+        forecastItem.innerHTML = `${time}<br>${temp}`;
 
-        forecastContainer.innerHTML += forecastItem;
+        forecastContainer.appendChild(forecastItem);
     });
 }
 
